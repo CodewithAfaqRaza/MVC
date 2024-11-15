@@ -3,7 +3,6 @@ namespace App\Controllers;
 use \App\Models\ArticleModel;
 
 class Articlecontroller
-
 {
     public function show()
     {

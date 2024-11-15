@@ -3,13 +3,18 @@ namespace App\Controllers;
 
 use Framework\Viewer;
 
-  class StudentNames{
-    private Viewer $viewer;
-    public function __construct(Viewer $viewer){
-        $this->viewer = $viewer;
-    }
-    public function displayNames($id){
-       print  $this->viewer->render("StudentName/name", ["id"=>$id]);
-    }
+class StudentNames
+{
+  private Viewer $viewer;
+  public function __construct(Viewer $viewer)
+  {
+    $this->viewer = $viewer;
   }
+  public function displayNames($id)
+  {
+    print $this->viewer->render("partials/header", ["title" => "Names"]);
+    print $this->viewer->render("StudentName/name", ["id" => $id]);
+    print $this->viewer->render("partials/Footer");
+  }
+}
 ?>

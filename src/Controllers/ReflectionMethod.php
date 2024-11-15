@@ -1,11 +1,9 @@
 <?php
-
 namespace App\Controllers;
-
 use App\Models\NewModel;
 use Framework\Viewer;
 
-class NewController
+class ReflectionMethod
 {
     private Viewer $viewer;
     private NewModel $newModel;
@@ -13,18 +11,7 @@ class NewController
     {
         $this->viewer = $viewer;
         $this->newModel = $newModel;
-    }
-    public function show()
-    {
-        // require "src/Model/new_model.php";
-        $all_news = new NewModel();
-        $all_news = $all_news->connect();
-
-        print $this->viewer->render("new_view", ['all_news' => $all_news]);
-
 
 
     }
 }
-
-?>
