@@ -16,9 +16,8 @@ class NewController
     }
     public function show()
     {
-        // require "src/Model/new_model.php";
-        $all_news = new NewModel();
-        $all_news = $all_news->connect();
+
+        $all_news = $this->newModel->connect();
 
         print $this->viewer->render("new_view", ['all_news' => $all_news]);
 

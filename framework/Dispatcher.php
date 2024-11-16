@@ -3,12 +3,15 @@
 namespace Framework;
 use Framework\Router;
 use ReflectionMethod;
+use ReflectionClass;
 class Dispatcher
 {
   private Router $router;
-  public function __construct(Router $router)
+  private Container $container;
+  public function __construct(Router $router, Container $container)
   {
     $this->router = $router;
+    $this->container = $container;
   }
   public function handleUrl($url)
   {
@@ -24,8 +27,8 @@ class Dispatcher
       $actionName = lcfirst($action);
 
       $action = $actionName;
-      $viewer = new Viewer;
-      $controller = $this->returningObject($class);
+      // $viewer = new Viewer;
+      $controller = $this->container->get($class);
 
 
 
@@ -40,20 +43,5 @@ class Dispatcher
       echo "Routes Not Found";
     }
   }
-  public function returningObject($class)
-  {
-    // return new $class();
-    $detail = new \ReflectionClass($class);
-    $constructor = $detail->getConstructor();
-    $parameters = $constructor->getParameters();
-    // dump($parameters);
-    $paramsArray = [];
-    foreach ($parameters as $params) {
-      $subClass = (string) $params->getType();
-      $paramsArray[] = $subClass;
-      dump($paramsArray);
-    }
-    dump($paramsArray);
-    return new $class(...$paramsArray);
-  }
+
 }

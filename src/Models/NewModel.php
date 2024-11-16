@@ -1,13 +1,18 @@
 <?php
 
 namespace App\Models;
-use PDO;
+use App\Database;
+// use PDO;
 class NewModel
 {
+    // private $db;
+    public function __construct(private Database $db)
+    {
+        // $this->db = $db;
+    }
     public function connect()
     {
-        $dsn = "mysql:host=db;dbname=db;charset=utf8";
-        $pdo = new PDO($dsn, 'db', 'db');
+        $pdo = $this->db->getConnection();
         $query = "SELECT * FROM news";
         $stmt = $pdo->prepare($query);
         $stmt->execute();
