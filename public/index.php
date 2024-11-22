@@ -1,11 +1,13 @@
 <?php
 
 use Framework\EnvReader;
+use Framework\Http\Request;
 
 
 define("BASE_PATH", dirname(__DIR__));
 
 require_once BASE_PATH . '/vendor/autoload.php';
+use Framework\HandleError;
 
 use Framework\Dispatcher;
 $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -23,12 +25,15 @@ if ($_ENV["SHOW_ERRORS"]) {
     ini_set('display_errors', false);
 
 }
-print $test;
+set_error_handler("Framework\HandleError::errorHandler");
+set_exception_handler("Framework\ExceptionHandler::errorException");
+// print $test;
 
-
+$request = Request::createFromGlobals();
+// dd($request);
 
 $dispatcher = new Dispatcher($routes, $container);
-$dispatcher->handleUrl($url);
+$dispatcher->handleUrl($request);
 
 
 
