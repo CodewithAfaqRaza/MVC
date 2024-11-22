@@ -8,7 +8,7 @@ class Viewer
         extract($data, EXTR_SKIP);
 
         ob_start();
-        require_once "View/" . $filename . ".php";
+        require_once BASE_PATH . "/View/" . $filename . ".php";
         return ob_get_clean();
 
     }

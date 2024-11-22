@@ -28,9 +28,9 @@ class Container
             }
             $subClass = (string) $params->getType();
             $paramsArray[] = $this->get($subClass);
-            dump($subClass);
+            // dump($subClass);
         }
-        dump($paramsArray);
+        // dump($paramsArray);
         // exit;
         return new $class(...$paramsArray);
     }

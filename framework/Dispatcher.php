@@ -3,7 +3,6 @@
 namespace Framework;
 use Framework\Router;
 use ReflectionMethod;
-use ReflectionClass;
 class Dispatcher
 {
   private Router $router;

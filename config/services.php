@@ -3,9 +3,10 @@ use Framework\Container;
 use App\Database;
 
 
-$conatiner = new Container;
+$container = new Container;
 
 
-$conatiner->set("Framework\Database", function () {
-    return new Database("db", "db", "db", "db");
+$container->set("Framework\Database", function () {
+    return new Database($_ENV['DB_HOST'], $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
 });
+return $container;

@@ -49,7 +49,7 @@ class Router
     }, $elements);
     $regax = implode("/", $elements);
     $pattern = "#^" . $regax . "$#";
-    // dump($pattern);
+    // dump($pattern); 
     return $pattern;
   }
 }
