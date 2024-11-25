@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+  Testing Twig
+{% endblock %}
+{% block body %}
+  <p>Welcome to the world of twig {{ id }}</p>
+  <ul>
+    {% for fruit in fruits %}
+      <li>{{ fruit|upper|reverse }}afaq</li>
+    {% endfor %}
+    {{ fruits.istanbul }}
+  </ul>
+
+  {{ hacked|raw }}
+{% endblock %}

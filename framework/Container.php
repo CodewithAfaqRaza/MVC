@@ -1,6 +1,7 @@
 <?php
 namespace Framework;
 use ReflectionClass;
+use ReflectionFunction;
 
 class Container
 {
@@ -11,8 +12,28 @@ class Container
     }
     public function get($class)
     {
+
+
         if (array_key_exists($class, $this->binding)) {
-            return $this->binding[$class]();
+
+            $ref = new ReflectionFunction($this->binding[$class]);
+
+            // dump($ref);
+            if (!empty($ref->getParameters())) {
+                $params = ($ref->getParameters());
+                $parameters = [];
+                foreach ($params as $param) {
+                    $type = $param->getType()->getName();
+                    $parameters[] = $this->get($type);
+                }
+                // dump($parameters);
+
+                return $this->binding[$class](...$parameters);
+            } else {
+                return $this->binding[$class]();
+
+            }
+
         }
         $detail = new ReflectionClass($class);
         if ($detail->getConstructor() === null) {

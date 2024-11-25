@@ -1,8 +1,12 @@
 <?php
 
 namespace Framework;
+use Framework\Exception\RouteNotFound;
+use Framework\Http\Request;
+use Framework\Http\Response;
 use Framework\Router;
 use ReflectionMethod;
+use Twig\Environment;
 class Dispatcher
 {
   private Router $router;
@@ -12,8 +16,10 @@ class Dispatcher
     $this->router = $router;
     $this->container = $container;
   }
-  public function handleUrl($url)
+  public function handleUrl(Request $request): Response
   {
+    $url = parse_url($request->uri, PHP_URL_PATH);
+
     if ($details = $this->router->match($url)) {
       // dump($details);
       $namespace = "App\\Controllers\\";
@@ -28,8 +34,15 @@ class Dispatcher
       $action = $actionName;
       // $viewer = new Viewer;
       $controller = $this->container->get($class);
+      $viewer = $this->container->get(Viewer::class);
+      $controller->setViewer($viewer);
 
+      $controller->setRequest($request);
+      $response = $this->container->get(Response::class);
+      $controller->setResponse($response);
 
+      $twig = $this->container->get(Environment::class);
+      $controller->setTwig($twig);
 
       $reflectionMethod = new ReflectionMethod($controller, $action);
       $parameters = $reflectionMethod->getParameters();
@@ -37,9 +50,10 @@ class Dispatcher
       foreach ($parameters as $params) {
         $paramsArray[$params->getName()] = $details[$params->getName()];
       }
-      $controller->$action(...$paramsArray);
+      // Each Action must return a Response Object
+      return $controller->$action(...$paramsArray);
     } else {
-      echo "Routes Not Found";
+      throw new RouteNotFound();
     }
   }
 

@@ -7,6 +7,8 @@
         "App\\": "src/",
         "Framework\\": "framework/"
       }
+    },
+    "require": {
+        "twig/twig": "^3.15"
     }
-
 }
