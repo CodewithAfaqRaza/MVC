@@ -1,5 +1,6 @@
 <?php
 
+use App\Database;
 use Framework\EnvReader;
 use Framework\Http\Request;
 use Twig\Environment;
@@ -28,8 +29,8 @@ if ($_ENV["SHOW_ERRORS"]) {
     ini_set('display_errors', false);
 
 }
-set_error_handler("Framework\HandleError::errorHandler");
-set_exception_handler("Framework\ExceptionHandler::errorException");
+// set_error_handler("Framework\HandleError::errorHandler");
+// set_exception_handler("Framework\ExceptionHandler::errorException");
 
 
 $request = Request::createFromGlobals();

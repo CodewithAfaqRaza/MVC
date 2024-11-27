@@ -18,7 +18,6 @@ class Container
 
             $ref = new ReflectionFunction($this->binding[$class]);
 
-            // dump($ref);
             if (!empty($ref->getParameters())) {
                 $params = ($ref->getParameters());
                 $parameters = [];

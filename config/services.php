@@ -8,7 +8,7 @@ use Twig\Loader\FilesystemLoader;
 $container = new Container;
 
 
-$container->set("App\Database", function () {
+$container->set(Database::class, function () {
     return new Database($_ENV['DB_HOST'], $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
 });
 // this is the file system loader classes 
