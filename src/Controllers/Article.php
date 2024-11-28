@@ -24,8 +24,26 @@ class Article extends BaseController
             "description" => empty($this->request->post["description"]) ? null : $this->request->post["description"],
         ];
         $result = $this->model->insert($data);
-        dump($result);
-        // $this->model->insert($this->request->post);
-        // dd("The form has been submitted successfully");
+        if ($result) {
+            header("Location: /article/all");
+        }
+        if(!$result){
+          $errors = $this->model->getErrors();
+         $this->response->setBody( $this->twig->render("Article/article.html.twig", ["errors" => $errors]));
+             return $this->response;
+        }
+    }
+    public function all(){
+       $records = $this->model->getAll();
+       $this->response->setBody($this->twig->render("Article/all.html.twig", ["records" => $records]));
+       return $this->response;
+    }
+    public function view ($id){
+        $record = $this->model->singleArticle($id);
+        if(!$record){
+            header("Location: /article/all");
+        }
+        $this->response->setBody($this->twig->render("Article/single.html.twig", ["record" => $record]));
+        return $this->response;
     }
 }

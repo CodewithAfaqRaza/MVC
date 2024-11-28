@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  {% if record is not empty %}
+    <h2>{{ record.title }}</h2>
+    <div>{{ record.description }}</div>
+    <button>Edit</button>
+    <button>Delete</button>
+    <a href="/article/all">Back To All Article</a>
+  {% endif %}
+{% endblock %}

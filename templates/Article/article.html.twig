@@ -1,7 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-  <form action="article/process" method="post">
+  {% if errors is not empty %}
+    <ul>
+      {% for error in errors %}
+        <li class="error">{{ error }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <form action="/article/process" method="post">
     <label for="title">Title</label>
     <input type="text" name="title" />
     <label for="text">Description</label>

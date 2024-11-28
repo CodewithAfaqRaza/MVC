@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <ul>
+    {% if records is not empty %}
+      {% for record in records %}
+        <li class="list">
+          <a href="/article/{{ record.id }}/view">{{ record.title }}</a>
+        </li>
+      {% endfor %}
+    {% endif %}
+  </ul>
+{% endblock %}

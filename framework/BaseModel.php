@@ -8,8 +8,10 @@ abstract class BaseModel
 {
     protected PDO $pdo;
     protected string $tableName;
+    protected array $errors;
     public function __construct(protected Database $db)
     {
+        $this->pdo = $this->db->getConnection();
         $class_array = explode("\\", $this::class);
         $className = array_pop($class_array);
         $this->tableName = strtolower($className);
@@ -17,7 +19,10 @@ abstract class BaseModel
 
     public function insert(array $data)
     {
-        dump($data);
+        $this->Validate($data);
+        if(!empty($this->errors)){
+            return false;
+        }
         $columns_name = array_keys($data);
         $columns = implode(", ", $columns_name);
 
@@ -26,19 +31,16 @@ abstract class BaseModel
 
         $sql = "INSERT INTO {$this->tableName} ({$columns}) VALUES ({$question_marks})";
 
-        dump($this->tableName, $sql);
-        $this->pdo = $this->db->getConnection();
-
         $stmt = $this->pdo->prepare($sql);
         $i = 1;
-        foreach ($data as $value) {
-            $valueType = match (gettype($value)) {
+        foreach ($data as $key => $value) {
+            $valueType = match (gettype($key)) {
                 "integer" => PDO::PARAM_INT,
-                "NULL" => PDO::PARAM_NULL,
                 "boolean" => PDO::PARAM_BOOL,
-                "double" => PDO::PARAM_STR,
+                "NULL" => PDO::PARAM_NULL,
                 default => PDO::PARAM_STR,
             };
+            
             $stmt->bindValue($i, $value, $valueType);
             $i++;
         }
@@ -50,5 +52,36 @@ abstract class BaseModel
     {
 
         return $this->tableName;
+    }
+    public function addErrors(string $error)
+    {
+
+        $this->errors[] = $error;
+    }
+    public function Validate(array $data)
+    {
+     foreach($data as $key => $value){
+        if(empty($value)){
+            $this->addErrors("This field is{$key} missing and is required");
+        }
+    }
+}
+   public function getAll(){
+    $sql = "SELECT * FROM {$this->tableName}";
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute();
+    $records = $stmt->fetchAll(); 
+    return $records;
+   }
+    public function getErrors (){
+        return $this->errors;
+    }
+    public function singleArticle($id){
+        $sql = "SELECT * FROM {$this->tableName} WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $record = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $record;
     }
 }
