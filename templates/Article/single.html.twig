@@ -4,8 +4,10 @@
   {% if record is not empty %}
     <h2>{{ record.title }}</h2>
     <div>{{ record.description }}</div>
-    <button>Edit</button>
-    <button>Delete</button>
-    <a href="/article/all">Back To All Article</a>
+    <button><a href="/article/{{ record.id }}/edit">Edit</a></button>
+    <button><a href="/article/{{ record.id }}/delete">Delete</a></button>
+    <div>
+      <a href="/article/all">Back To All Article</a>
+    </div>
   {% endif %}
 {% endblock %}

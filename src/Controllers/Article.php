@@ -25,7 +25,8 @@ class Article extends BaseController
         ];
         $result = $this->model->insert($data);
         if ($result) {
-            header("Location: /article/all");
+          $id = $this->model->getLastInsertId();
+            header("Location: /article/$id/view");
         }
         if(!$result){
           $errors = $this->model->getErrors();
@@ -39,11 +40,13 @@ class Article extends BaseController
        return $this->response;
     }
     public function view ($id){
-        $record = $this->model->singleArticle($id);
+        $record = $this->model->getById($id);
         if(!$record){
             header("Location: /article/all");
         }
-        $this->response->setBody($this->twig->render("Article/single.html.twig", ["record" => $record]));
-        return $this->response;
+       return $this->twigViewer->render("Article/single.html.twig", ["record" => $record]);
+        
     }
+
+
 }

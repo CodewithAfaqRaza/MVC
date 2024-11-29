@@ -76,12 +76,15 @@ abstract class BaseModel
     public function getErrors (){
         return $this->errors;
     }
-    public function singleArticle($id){
+    public function getById($id){
         $sql = "SELECT * FROM {$this->tableName} WHERE id = :id";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
         $record = $stmt->fetch(PDO::FETCH_ASSOC);
         return $record;
+    }
+    public function getLastInsertId(){
+       return  $this->pdo->lastInsertId();
     }
 }

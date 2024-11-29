@@ -7,12 +7,14 @@ use Framework\Http\Response;
 use Framework\Viewer;
 use Twig\Environment;
 
+
 abstract class BaseController
 {
     protected Request $request;
     protected Response $response;
     public Viewer $viewer;
     protected Environment $twig;
+    protected TwigViewer $twigViewer;
 
     public function setRequest(Request $request)
     {
@@ -29,6 +31,10 @@ abstract class BaseController
     public function setTwig(Environment $twig)
     {
         $this->twig = $twig;
+    }
+    public function setTwigViewer(TwigViewer $twigviewer)
+    {
+        $this->twigViewer = $twigviewer;
     }
 
 

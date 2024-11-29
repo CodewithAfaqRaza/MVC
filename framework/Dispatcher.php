@@ -7,6 +7,7 @@ use Framework\Http\Response;
 use Framework\Router;
 use ReflectionMethod;
 use Twig\Environment;
+use Framework\TwigViewer;
 class Dispatcher
 {
   private Router $router;
@@ -43,6 +44,8 @@ class Dispatcher
 
       $twig = $this->container->get(Environment::class);
       $controller->setTwig($twig);
+      $twigViewer = $this->container->get(TwigViewer::class);
+      $controller->setTwigViewer($twigViewer);
 
       $reflectionMethod = new ReflectionMethod($controller, $action);
       $parameters = $reflectionMethod->getParameters();
