@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <form action="/article/{{ record.id }}/remove" method="post">
+    Do Really Want To Delete the record
+    <button>Yes</button>
+    <a href="/article/{{ record.id }}/view">Cancel</a>
+  </form>
+{% endblock %}

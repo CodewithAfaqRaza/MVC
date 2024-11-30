@@ -82,9 +82,50 @@ abstract class BaseModel
         $stmt->bindValue(":id", $id, PDO::PARAM_INT);
         $stmt->execute();
         $record = $stmt->fetch(PDO::FETCH_ASSOC);
+         if(!$record){
+             return false;
+         }
         return $record;
+
     }
     public function getLastInsertId(){
        return  $this->pdo->lastInsertId();
+    }
+    public function update($id, array $data){
+        $this->Validate($data);
+        if(!empty($this->errors)){
+            return false;
+        }
+        $array_columns  = array_keys($data);
+         array_walk($array_columns,function(&$value){
+          $value = $value . " = ? ";
+        });
+        $columns = implode(", ", $array_columns);
+
+        $sql = "UPDATE {$this->tableName} SET $columns WHERE id = ?";
+        $pdo = $this->db->getConnection();
+        $stmt = $pdo->prepare($sql);
+        $i = 1;
+        foreach ($data as $key => $value) {
+            $valueType = match (gettype($key)) {
+                "integer" => PDO::PARAM_INT,
+                "boolean" => PDO::PARAM_BOOL,
+                "NULL" => PDO::PARAM_NULL,
+                default => PDO::PARAM_STR,
+            };
+            
+            $stmt->bindValue($i, $value, $valueType);
+            $i++;
+        }
+        $stmt->bindValue($i, $id, PDO::PARAM_INT);
+        return $stmt->execute();
+
+        
+    }
+    public function delete($id){
+        $sql = "DELETE FROM {$this->tableName} WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(":id", $id, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 }
