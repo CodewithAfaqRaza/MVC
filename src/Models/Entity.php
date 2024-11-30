@@ -4,8 +4,7 @@ namespace App\Models;
 
 use Framework\BaseModel;
 
-
-class Article extends Entity
+class Entity extends BaseModel
 {
 
 }

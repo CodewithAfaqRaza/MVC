@@ -2,99 +2,106 @@
 
 namespace Framework;
 
-use App\Models\Article as ArticleModel;
+use App\Models\Entity as EntityModel;
 use Framework\BaseController;
 use Framework\Exception\RouteNotFound;
 use Framework\Http\Response;
 
 class EntityController extends BaseController implements EntityInterface {
-    
-    public function __construct(protected ArticleModel $model)
+    protected string $filename;
+    protected string $filepart;
+    protected array $columns ;
+    public function __construct(protected EntityModel $model)
     {
+        $this->filename = strtolower($this->model->getTableName());
+        $this->filepart= ucfirst($this->model->getTableName());
     }
     public function new():Response
     {
-        $this->response->setBody($this->twig->render("Article/article.html.twig"));
+        $this->response->setBody($this->twig->render("{$this->filename}/new.html.twig"));
         return $this->response;
+    }
+    public function getColumns(){
+        return  $this->columns;
     }
     public function process()
     {
-
-        $data = [
-            "title" => empty($this->request->post["title"]) ? null : $this->request->post["title"],
-            "description" => empty($this->request->post["description"]) ? null : $this->request->post["description"],
-        ];
+        
+        // "title" => empty($this->request->post["title"]) ? null : $this->request->post["title"],
+        // "description" => empty($this->request->post["description"]) ? null : $this->request->post["description"],
+        $data = [];
+        foreach ($this->getColumns() as $column) {
+            $data[$column] = $this->request->post[$column];
+        }
         $result = $this->model->insert($data);
         if ($result) {
           $id = $this->model->getLastInsertId();
-            header("Location: /article/$id/view");
+            header("Location: /{$this->filename}/$id/view");
         }
         if(!$result){
           $errors = $this->model->getErrors();
-         $this->response->setBody( $this->twig->render("Article/article.html.twig", ["errors" => $errors]));
+         $this->response->setBody( $this->twig->render("{$this->filename}/new.html.twig", ["errors" => $errors]));
              return $this->response;
         }
     }
     public function all():Response{
        $records = $this->model->getAll();
-       $this->response->setBody($this->twig->render("Article/all.html.twig", ["records" => $records]));
+       $this->response->setBody($this->twig->render("{$this->filename}/all.html.twig", ["records" => $records]));
        return $this->response;
     }
     public function view ($id):Response{
         $record = $this->model->getById($id);
         if(!$record){
-            header("Location: /article/all");
+            header("Location: /{$this->filename}/all");
         }
-       return $this->twigViewer->render("Article/single.html.twig", ["record" => $record]);
+       return $this->twigViewer->render("{$this->filename}/single.html.twig", ["record" => $record]);
         
     }
     public function update($id):Response{
-        $data = [
-            // "title"=>empty($this->request->post['title']?null: $this->request->post['title']),
-
-            // "description"=>empty($this->request->post['description']?null: $this->request->post['descriptions'])
-            "title"=>$this->request->post['title'],
-            "description"=>$this->request->post['description'],
-        ];
+       
+        $data = [];
+        foreach ($this->getColumns() as $column) {
+            $data[$column] = $this->request->post[$column];
+        }
     $record = $this->model->getById($id);
         if($record){
            $status =  $this->model->update($id, $data);
            if($status){
-            header("Location: /article/$id/view");
+            header("Location: /{$this->filename}/$id/view");
            }else{
-          return   $this->twigViewer->render("Article/update.html.twig", ["record" => $record, "errors" => $this->model->getErrors()]);
+          return   $this->twigViewer->render("{$this->filename}/update.html.twig", ["record" => $data, "errors" => $this->model->getErrors()]);
 
            }
         }     else{
-            throw new RouteNotFound("This article does not exits");
+            throw new RouteNotFound("This {$this->filename} does not exits");
         }
     }
     public function edit ($id):Response{
     $record = $this->model->getById($id);
         if($record){
-          return   $this->twigViewer->render("Article/update.html.twig", ["record" => $record]);
+          return   $this->twigViewer->render("{$this->filename}/update.html.twig", ["record" => $record]);
         } else{
-            throw new RouteNotFound("This article does not exits");
+            throw new RouteNotFound("This {$this->filename} does not exits");
         }
     }
     public function delete($id):Response{
     $record = $this->getRecord($id);
     if(!$record){
-        throw new RouteNotFound("This article does not exits");
+        throw new RouteNotFound("This {$this->filename} does not exits");
     }
-    return $this->twigViewer->render("Article/delete.html.twig", ["record" => $record]);
+    return $this->twigViewer->render("{$this->filename}/delete.html.twig", ["record" => $record]);
     }
     public function remove($id){
         $record = $this->getRecord($id);
         $status = $this->model->delete($id);
         if($status){
-            header("Location: /article/all");
+            header("Location: /{$this->filename}/all");
         }
     }
     public function getRecord($id){
         $record = $this->model->getById($id);
         if(!$record){
-            throw new RouteNotFound("This article does not exits");
+            throw new RouteNotFound("This {$this->filename} does not exits");
             }
             return $record;
     }

@@ -20,8 +20,9 @@ class Dispatcher
   public function handleUrl(Request $request): Response
   {
     $url = parse_url($request->uri, PHP_URL_PATH);
-
-    if ($details = $this->router->match($url)) {
+    $method = $request->method;
+    // dump($request);
+    if ($details = $this->router->match($url,$method)) {
       // dump($details);
       $namespace = "App\\Controllers\\";
       $className = ucwords($details['controller'], "-");

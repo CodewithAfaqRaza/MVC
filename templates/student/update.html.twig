@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  {% if errors is not empty %}
+    <ul>
+      {% for error in errors %}
+        <li class="error">{{ error }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <form action="/student/{{ record.id }}/update" method="post">
+    <label for="name">Name</label>
+    <input type="text" name="name" value="{{ record.name }}" />
+    <label for="fathername">Father Name</label>
+    <input type="text" name="fathername" value="{{ record.fathername }}" />
+    <label for="email">Email</label>
+    <input type="email" name="email" value="{{ record.email }}" />
+    <label for="hobby">Hobby</label>
+    <input type="text" name="hobby" value="{{ record.hobby }}" />
+    <button type="submit">Update Article</button>
+  </form>
+  <a href="/student/all">All Student</a>
+{% endblock %}

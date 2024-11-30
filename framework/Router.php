@@ -9,7 +9,7 @@ class Router
   {
     $this->routesArray[$path] = $details;
   }
-  public function match($path): array|bool
+  public function match($path, $method): array|bool
   {
     $path = trim($path, "/");// remove leading and trailing slashes
 
@@ -21,6 +21,11 @@ class Router
       if (preg_match($pattern, $path, $matches)) {
         $matches = array_filter($matches, "is_string", ARRAY_FILTER_USE_KEY);
         $combine_array = $matches + $details;
+           if(array_key_exists('method', $combine_array)){
+           if(strtolower($combine_array['method']) !== strtoLower($method)){
+            continue;
+           }
+           }
         return $combine_array;
       } else {
       }

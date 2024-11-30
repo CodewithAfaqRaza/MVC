@@ -5,10 +5,10 @@
     {% if records is not empty %}
       {% for record in records %}
         <li class="list">
-          <a href="/article/{{ record.id }}/view">{{ record.title }}</a>
+          <a href="/student/{{ record.id }}/view">{{ record.name }}</a>
         </li>
       {% endfor %}
     {% endif %}
   </ul>
-  <a href="/article/new">Add New Article</a>
+  <a href="/student/new">Add New Article</a>
 {% endblock %}
