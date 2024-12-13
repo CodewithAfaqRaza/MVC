@@ -5,7 +5,14 @@ use ReflectionFunction;
 
 class Container
 {
+    public static  $count ;
     private $binding = [];
+
+    public function __construct()
+    {
+        self::$count++;
+        // print $this->count;
+    }
     public function set($class, $value)
     {
         $this->binding[$class] = $value;
@@ -35,6 +42,7 @@ class Container
 
         }
         $detail = new ReflectionClass($class);
+        // dump($detail);
         if ($detail->getConstructor() === null) {
             return new $class();
         }
@@ -54,4 +62,8 @@ class Container
         // exit;
         return new $class(...$paramsArray);
     }
+    public static function getCount(){
+        return self::$count;
+    }
+
 }

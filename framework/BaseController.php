@@ -4,6 +4,8 @@ namespace Framework;
 
 use Framework\Http\Request;
 use Framework\Http\Response;
+use Framework\Session\SessionHandler;
+use Framework\Template\TwigViewer;
 use Framework\Viewer;
 use Twig\Environment;
 
@@ -15,6 +17,8 @@ abstract class BaseController
     public Viewer $viewer;
     protected Environment $twig;
     protected TwigViewer $twigViewer;
+    protected SessionHandler $sessionHandler;
+
 
     public function setRequest(Request $request)
     {
@@ -35,6 +39,9 @@ abstract class BaseController
     public function setTwigViewer(TwigViewer $twigviewer)
     {
         $this->twigViewer = $twigviewer;
+    }
+    public function setSessionHandler( SessionHandler $sessionHandler){
+        $this->sessionHandler = $sessionHandler;
     }
 
 

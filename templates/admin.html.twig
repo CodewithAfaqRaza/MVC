@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <h1>This is the admin data</h1>
+  {% for record in records %}
+    <h2>{{ record }}</h2>
+  {% endfor %}
+{% endblock %}

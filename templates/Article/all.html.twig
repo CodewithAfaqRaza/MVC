@@ -3,6 +3,7 @@
 {% block body %}
   <ul>
     {% if records is not empty %}
+      {{ message }}
       {% for record in records %}
         <li class="list">
           <a href="/article/{{ record.id }}/view">{{ record.title }}</a>

@@ -5,6 +5,8 @@ use Framework\Exception\RouteNotFound;
 use Framework\Http\Request;
 use Framework\Http\Response;
 use Framework\Router;
+use Framework\Session\SessionHandler;
+use Framework\Template\TwigViewer as TemplateTwigViewer;
 use ReflectionMethod;
 use Twig\Environment;
 use Framework\TwigViewer;
@@ -19,12 +21,16 @@ class Dispatcher
   }
   public function handleUrl(Request $request): Response
   {
+    $setSessionHandler = $this->container->get(SessionHandler::class);
+    // dump($setSessionHandler);
+    $request->setSessionHandler($setSessionHandler);
     $url = parse_url($request->uri, PHP_URL_PATH);
     $method = $request->method;
     // dump($request);
     if ($details = $this->router->match($url,$method)) {
       // dump($details);
       $namespace = "App\\Controllers\\";
+      // $namespace = $namespace.
       $className = ucwords($details['controller'], "-");
       $className = str_replace("-", "", $className);
       $class = $namespace . $className;
@@ -45,7 +51,7 @@ class Dispatcher
 
       $twig = $this->container->get(Environment::class);
       $controller->setTwig($twig);
-      $twigViewer = $this->container->get(TwigViewer::class);
+      $twigViewer = $this->container->get(Template\TwigViewer::class);
       $controller->setTwigViewer($twigViewer);
 
       $reflectionMethod = new ReflectionMethod($controller, $action);

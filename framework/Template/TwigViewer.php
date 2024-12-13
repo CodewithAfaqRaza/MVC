@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework;
+namespace Framework\Template;
 use Twig\Environment;
 use Framework\Http\Response;
 class TwigViewer {

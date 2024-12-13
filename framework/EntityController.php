@@ -11,13 +11,17 @@ class EntityController extends BaseController implements EntityInterface {
     protected string $filename;
     protected string $filepart;
     protected array $columns ;
+    // protected SessionHandler $session;
     public function __construct(protected EntityModel $model)
     {
         $this->filename = strtolower($this->model->getTableName());
         $this->filepart= ucfirst($this->model->getTableName());
+        //  $this->session = new SessionHandler();
+         
     }
     public function new():Response
     {
+        // $this->session->set('entity', "The Entity has been inserted Succesfully");
         $this->response->setBody($this->twig->render("{$this->filename}/new.html.twig"));
         return $this->response;
     }
@@ -26,9 +30,6 @@ class EntityController extends BaseController implements EntityInterface {
     }
     public function process()
     {
-        
-        // "title" => empty($this->request->post["title"]) ? null : $this->request->post["title"],
-        // "description" => empty($this->request->post["description"]) ? null : $this->request->post["description"],
         $data = [];
         foreach ($this->getColumns() as $column) {
             $data[$column] = $this->request->post[$column];
@@ -36,6 +37,7 @@ class EntityController extends BaseController implements EntityInterface {
         $result = $this->model->insert($data);
         if ($result) {
           $id = $this->model->getLastInsertId();
+          $this->request->getSessionHandler()->setFlash('success', "The Entity with {$id} has been inserted Succesfully");
             header("Location: /{$this->filename}/$id/view");
         }
         if(!$result){
@@ -46,6 +48,8 @@ class EntityController extends BaseController implements EntityInterface {
     }
     public function all():Response{
        $records = $this->model->getAll();
+       
+
        $this->response->setBody($this->twig->render("{$this->filename}/all.html.twig", ["records" => $records]));
        return $this->response;
     }

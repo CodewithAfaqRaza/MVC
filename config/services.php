@@ -1,23 +1,19 @@
 <?php
 use Framework\Container;
 use App\Database;
+use Framework\Session\SessionHandler;
 use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
+use Framework\Template\TwigFactory;
 
-
-$container = new Container;
+$container = new Container();
 
 
 $container->set(Database::class, function () {
     return new Database($_ENV['DB_HOST'], $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
 });
-// this is the file system loader classes 
-$container->set(FilesystemLoader::class, function () {
-    return new FilesystemLoader(BASE_PATH . "/templates");
-});
-$loader = $container->get(FilesystemLoader::class);
-// this is the twig environment
-$container->set(Environment::class, function (FilesystemLoader $loader) {
-    return new Environment($loader);
+// this is the file Environment  classes 
+$container->set(Environment::class, function () {
+$twigFactory = new TwigFactory(new SessionHandler,BASE_PATH ."/templates");
+return $twigFactory->create();
 });
 return $container;

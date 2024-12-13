@@ -3,6 +3,7 @@
 use App\Database;
 use Framework\EnvReader;
 use Framework\Http\Request;
+use Framework\SessionHandler;
 use Twig\Environment;
 
 
@@ -20,8 +21,8 @@ require BASE_PATH . "/config/services.php";
 
 $twig = $container->get(Environment::class);
 // dd($twig);
-$envreader = $container->get("Framework\EnvReader"::class);
-$envreader->reader(BASE_PATH . "/" . ".env");
+$envReader = $container->get("Framework\EnvReader"::class);
+$envReader->reader(BASE_PATH . "/" . ".env");
 
 if ($_ENV["SHOW_ERRORS"]) {
     ini_set('display_errors', true);
@@ -29,6 +30,7 @@ if ($_ENV["SHOW_ERRORS"]) {
     ini_set('display_errors', false);
 
 }
+
 // set_error_handler("Framework\HandleError::errorHandler");
 // set_exception_handler("Framework\ExceptionHandler::errorException");
 
