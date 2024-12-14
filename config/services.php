@@ -12,7 +12,8 @@ $container->set(Database::class, function () {
     return new Database($_ENV['DB_HOST'], $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
 });
 // this is the file Environment  classes 
-$container->set(Environment::class, function () {
+$sessionHandler = $container->get(SessionHandler::class); 
+$container->set(Environment::class, function () use($sessionHandler):Environment{
 $twigFactory = new TwigFactory(new SessionHandler,BASE_PATH ."/templates");
 return $twigFactory->create();
 });

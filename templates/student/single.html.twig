@@ -1,6 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% if session().hasFlash('success')%}
+<div class="alert alert-success" role="alert">
+
+<ul>
+{% for massege in session().getFlash('success')%}
+<li>{{ massege }}</li>
+{% endfor %}
+</ul>
+{%endif%}
   {% if record is not empty %}
     <h2>{{ record.name }}</h2>
     <div>{{ record.hobby }}</div>

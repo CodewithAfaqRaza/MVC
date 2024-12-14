@@ -6,10 +6,10 @@ use Framework\Http\Request;
 use Framework\Http\Response;
 use Framework\Router;
 use Framework\Session\SessionHandler;
-use Framework\Template\TwigViewer as TemplateTwigViewer;
+use Framework\Template\TwigViewer;
 use ReflectionMethod;
 use Twig\Environment;
-use Framework\TwigViewer;
+// use Framework\TwigViewer;
 class Dispatcher
 {
   private Router $router;
@@ -51,7 +51,7 @@ class Dispatcher
 
       $twig = $this->container->get(Environment::class);
       $controller->setTwig($twig);
-      $twigViewer = $this->container->get(Template\TwigViewer::class);
+      $twigViewer = $this->container->get(TwigViewer::class);
       $controller->setTwigViewer($twigViewer);
 
       $reflectionMethod = new ReflectionMethod($controller, $action);
