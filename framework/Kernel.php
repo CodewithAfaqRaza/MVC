@@ -4,6 +4,7 @@ namespace Framework;
 
 use App\DummyTest;
 use Framework\Exception\RouteNotFound;
+use Framework\Http\Middleware\RequestHandler;
 use Framework\Http\Request;
 use Framework\Http\Response;
 use Framework\Router;
@@ -12,20 +13,24 @@ use Framework\Template\TwigViewer;
 use ReflectionMethod;
 use Twig\Environment;
 // use Framework\TwigViewer;
-class Dispatcher
+class kernel
 {
   private Router $router;
   private Container $container;
-  public function __construct(Router $router, Container $container)
+  private array $middlewares;
+  public function __construct(Router $router, Container $container,array $middlewares)
   {
     $this->router = $router;
     $this->container = $container;
+    $this->middlewares = $middlewares;
   }
-  public function handleUrl(Request $request): Response
+  public function handle(Request $request): Response
   {
+    //  dump($this->middlewares);
+   
     $setSessionHandler = $this->container->get(SessionHandler::class);
     // dump($setSessionHandler);
-  
+    // dump($this->requestHandler);
     $request->setSessionHandler($setSessionHandler);
     $url = parse_url($request->uri, PHP_URL_PATH);
     $method = $request->method;
@@ -37,6 +42,7 @@ class Dispatcher
       $className = ucwords($details['controller'], "-");
       $className = str_replace("-", "", $className);
       $class = $namespace . $className;
+  
 
       $actionName = ucwords($details['action'], "-");
       $action = str_replace("-", "", $actionName);
@@ -63,8 +69,26 @@ class Dispatcher
       foreach ($parameters as $params) {
         $paramsArray[$params->getName()] = $details[$params->getName()];
       }
-      // Each Action must return a Response Object
-      return $controller->$action(...$paramsArray);
+   
+      $controllerHandler = new ControllerHandler($controller,$action,$paramsArray);
+      if(array_key_exists('middlewares',$details)){
+        $detailsMiddlewaresArray  =  explode("|",$details['middlewares']);
+       
+            array_walk($detailsMiddlewaresArray,function(&$value){
+              if(array_key_exists($value,$this->middlewares)){
+                $middlewareClass =  $this->middlewares[$value];
+                $value =  $this->container->get($middlewareClass);
+              }
+            });
+        
+      }
+      $requestHandler = new RequestHandler($controllerHandler);
+      if(!empty($detailsMiddlewaresArray)){
+        $requestHandler->middlewares = $detailsMiddlewaresArray;
+
+      }
+      return $requestHandler->handle($request);
+      // return $controller->$action(...$paramsArray);
     } else {
       throw new RouteNotFound();
     }

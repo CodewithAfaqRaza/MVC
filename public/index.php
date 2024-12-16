@@ -13,10 +13,13 @@ require_once BASE_PATH . '/vendor/autoload.php';
 use Framework\HandleError;
 
 use Framework\Dispatcher;
+use Framework\kernel;
+
 $url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 require BASE_PATH . "/config/routes.php";
 require BASE_PATH . "/config/services.php";
+require BASE_PATH . "/config/middlewares.php";
 
 
 $twig = $container->get(Environment::class);
@@ -38,8 +41,8 @@ if ($_ENV["SHOW_ERRORS"]) {
 $request = Request::createFromGlobals();
 
 
-$dispatcher = new Dispatcher($routes, $container);
-$response = $dispatcher->handleUrl($request);
+$dispatcher = new kernel($routes, $container,$middlewares);
+$response = $dispatcher->handle($request);
 $response->send();
 
 

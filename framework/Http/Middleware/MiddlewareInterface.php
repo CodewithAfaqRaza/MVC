@@ -6,6 +6,14 @@ use Framework\Http\Request;
 use Framework\Http\Response;
 use Framework\Http\Middleware\RequestHandler;
 
+
+/**
+ * Participant in processing a server request and response.
+ *
+ * An HTTP middleware component participates in processing an HTTP message:
+ * by acting on the request, generating the response, or forwarding the
+ * request to a subsequent middleware and possibly acting on its response.
+ */
 interface MiddlewareInterface
 {
     /**
