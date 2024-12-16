@@ -1,6 +1,8 @@
 <?php
 
 namespace Framework;
+
+use App\DummyTest;
 use Framework\Exception\RouteNotFound;
 use Framework\Http\Request;
 use Framework\Http\Response;
@@ -23,6 +25,7 @@ class Dispatcher
   {
     $setSessionHandler = $this->container->get(SessionHandler::class);
     // dump($setSessionHandler);
+  
     $request->setSessionHandler($setSessionHandler);
     $url = parse_url($request->uri, PHP_URL_PATH);
     $method = $request->method;

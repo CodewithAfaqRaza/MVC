@@ -5,6 +5,7 @@ namespace Framework;
 use App\Models\Entity as EntityModel;
 use Framework\BaseController;
 use Framework\Exception\RouteNotFound;
+use Framework\Http\RedirectResponse;
 use Framework\Http\Response;
 
 class EntityController extends BaseController implements EntityInterface {
@@ -22,14 +23,20 @@ class EntityController extends BaseController implements EntityInterface {
     public function new():Response
     {
         // $this->session->set('entity', "The Entity has been inserted Succesfully");
-        $this->response->setBody($this->twig->render("{$this->filename}/new.html.twig"));
-        return $this->response;
+        $csrf_token = $this->request->getSessionHandler()->CsrfToken();
+       return $this->twigViewer->render("{$this->filename}/new.html.twig", ["csrf_token" => $csrf_token]);
+        // return $this->response;
     }
     public function getColumns(){
         return  $this->columns;
     }
     public function process()
     {
+        $session_csrf_token = $this->request->getSessionHandler()->get('csrf_token');
+        $form_csrf_token = $this->request->post['_token'];
+        if (!hash_equals($session_csrf_token,$form_csrf_token)) {
+            throw new RouteNotFound("This {$this->filename} does not exits");
+        }
         $data = [];
         foreach ($this->getColumns() as $column) {
             $data[$column] = $this->request->post[$column];
@@ -38,7 +45,8 @@ class EntityController extends BaseController implements EntityInterface {
         if ($result) {
           $id = $this->model->getLastInsertId();
           $this->request->getSessionHandler()->setFlash('success', "The Entity with {$id} has been inserted Succesfully");
-            header("Location: /{$this->filename}/$id/view");
+          return new RedirectResponse("/{$this->filename}/$id/view");
+            // header("Location: /{$this->filename}/$id/view");
         }
         if(!$result){
           $errors = $this->model->getErrors();

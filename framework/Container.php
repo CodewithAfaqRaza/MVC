@@ -7,6 +7,8 @@ class Container
 {
     public static  $count ;
     private $binding = [];
+    // public array = []
+    private array $initialized = [];
 
     public function __construct()
     {
@@ -19,7 +21,9 @@ class Container
     }
     public function get($class)
     {
-
+     if(array_key_exists($class,$this->initialized)){
+        return $this->initialized[$class];
+     }
 
         if (array_key_exists($class, $this->binding)) {
 
@@ -44,7 +48,9 @@ class Container
         $detail = new ReflectionClass($class);
         // dump($detail);
         if ($detail->getConstructor() === null) {
-            return new $class();
+            $newClass = new $class();
+            $this->initialized[$class] = $newClass;
+            return $newClass;
         }
         $constructor = $detail->getConstructor();
         $parameters = $constructor->getParameters();
@@ -60,7 +66,9 @@ class Container
         }
         // dump($paramsArray);
         // exit;
-        return new $class(...$paramsArray);
+        $mainClass = new $class(...$paramsArray);
+        $this->initialized[$class] = $mainClass;
+        return $mainClass;
     }
     public static function getCount(){
         return self::$count;

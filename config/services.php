@@ -1,6 +1,7 @@
 <?php
 use Framework\Container;
 use App\Database;
+use Framework\Http\Response;
 use Framework\Session\SessionHandler;
 use Twig\Environment;
 use Framework\Template\TwigFactory;
@@ -14,7 +15,11 @@ $container->set(Database::class, function () {
 // this is the file Environment  classes 
 $sessionHandler = $container->get(SessionHandler::class); 
 $container->set(Environment::class, function () use($sessionHandler):Environment{
-$twigFactory = new TwigFactory(new SessionHandler,BASE_PATH ."/templates");
+$twigFactory = new TwigFactory($sessionHandler,BASE_PATH ."/templates");
 return $twigFactory->create();
+});
+
+$container->set(Response::class,function(){
+    return new Response();
 });
 return $container;

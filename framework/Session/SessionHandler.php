@@ -29,7 +29,6 @@ class SessionHandler  {
     {
         $flash =  $this->get(self::FLASH_KEY) ?? [];
         $flash[$key][] = $massage;
-        // dump($flash);
         $this->set(self::FLASH_KEY,$flash);
     
     }
@@ -51,6 +50,14 @@ class SessionHandler  {
             return $messages;
         }
         return [];
+    }
+    public function CsrfToken(){
+       if(!$this->has('csrf_token')){
+        $token = bin2hex(random_bytes(32));
+        $this->set('csrf_token',$token);
+        return $this->get('csrf_token');
+       }
+       return $this->get('csrf_token');
     }
     // private function initFlashMessages(): void
     // {
