@@ -3,6 +3,8 @@
 namespace Framework;
 
 use App\DummyTest;
+use Framework\EventDispatcher\EventDispatcher;
+use Framework\Events\ResponseEvent;
 use Framework\Exception\RouteNotFound;
 use Framework\Http\Middleware\RequestHandler;
 use Framework\Http\Request;
@@ -18,32 +20,28 @@ class kernel
   private Router $router;
   private Container $container;
   private array $middlewares;
-  public function __construct(Router $router, Container $container,array $middlewares)
+  private EventDispatcher $eventDispatcher;
+  public function __construct(Router $router, Container $container,array $middlewares,EventDispatcher $eventDispatcher)
   {
     $this->router = $router;
     $this->container = $container;
     $this->middlewares = $middlewares;
+    $this->eventDispatcher = $eventDispatcher;
   }
   public function handle(Request $request): Response
   {
-    //  dump($this->middlewares);
-   
     $setSessionHandler = $this->container->get(SessionHandler::class);
-    // dump($setSessionHandler);
-    // dump($this->requestHandler);
+
     $request->setSessionHandler($setSessionHandler);
     $url = parse_url($request->uri, PHP_URL_PATH);
     $method = $request->method;
-    // dump($request);
+
     if ($details = $this->router->match($url,$method)) {
-      // dump($details);
+
       $namespace = "App\\Controllers\\";
-      // $namespace = $namespace.
       $className = ucwords($details['controller'], "-");
       $className = str_replace("-", "", $className);
       $class = $namespace . $className;
-  
-
       $actionName = ucwords($details['action'], "-");
       $action = str_replace("-", "", $actionName);
       $actionName = lcfirst($action);
@@ -87,7 +85,11 @@ class kernel
         $requestHandler->middlewares = $detailsMiddlewaresArray;
 
       }
-      return $requestHandler->handle($request);
+      $response = $requestHandler->handle($request);
+      $this->eventDispatcher->dispatch(new ResponseEvent($request, $response));
+      // dump($response);
+      return $response;
+
       // return $controller->$action(...$paramsArray);
     } else {
       throw new RouteNotFound();
