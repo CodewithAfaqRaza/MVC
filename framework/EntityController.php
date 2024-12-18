@@ -4,6 +4,7 @@ namespace Framework;
 
 use App\Models\Entity as EntityModel;
 use Framework\BaseController;
+use Framework\Events\StudentAdd;
 use Framework\Exception\RouteNotFound;
 use Framework\Http\RedirectResponse;
 use Framework\Http\Response;
@@ -45,6 +46,7 @@ class EntityController extends BaseController implements EntityInterface {
         if ($result) {
           $id = $this->model->getLastInsertId();
           $this->request->getSessionHandler()->setFlash('success', "The Entity with {$id} has been inserted Succesfully");
+          $this->eventDispatcher->dispatch(new StudentAdd($this));
           return new RedirectResponse("/{$this->filename}/$id/view");
             // header("Location: /{$this->filename}/$id/view");
         }

@@ -8,15 +8,15 @@ use Framework\Http\Response;
 
 class ResponseEvent extends Event{
     public function __construct(
-        private Request $request,
-        private Response $response
+        public  Request $request,
+        public Response $response
     )
     {
     }
-    public function getResponse (){
+    public function getResponse ():Response{
         return $this->response;
     }
-    public function getRequest(){
+    public function getRequest():Request{
         return $this->request;
     }
 

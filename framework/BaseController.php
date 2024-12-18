@@ -2,6 +2,7 @@
 
 namespace Framework;
 
+use Framework\EventDispatcher\EventDispatcher;
 use Framework\Http\Request;
 use Framework\Http\Response;
 use Framework\Session\SessionHandler;
@@ -18,6 +19,7 @@ abstract class BaseController
     protected Environment $twig;
     protected TwigViewer $twigViewer;
     protected SessionHandler $sessionHandler;
+    protected EventDispatcher $eventDispatcher;
 
 
     public function setRequest(Request $request)
@@ -39,6 +41,10 @@ abstract class BaseController
     public function setTwigViewer(TwigViewer $twigviewer)
     {
         $this->twigViewer = $twigviewer;
+    }
+    public function setEventDispatcher( EventDispatcher $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
     }
     public function setSessionHandler( SessionHandler $sessionHandler){
         $this->sessionHandler = $sessionHandler;

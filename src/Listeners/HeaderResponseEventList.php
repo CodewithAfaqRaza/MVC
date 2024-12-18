@@ -9,11 +9,10 @@ class HeaderResponseEventList{
     {
         // dump($event);
       $response =   $event->getResponse();
-      echo  $response->setBody("The Dummy cricket the Event Dispatcher");
-      if(strpos($response->getBody(),'cricket')){
+      if(strpos($response->getBody(),'hobby')){
         $event->PropagationStopped();
-        $response->setBody("Cricket is nor Allowed");
       }
+      $response->setBody($response->getBody()." Message From the Second That Interests is not allowed");
     }
     
 }

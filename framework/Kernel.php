@@ -60,6 +60,9 @@ class kernel
       $controller->setTwig($twig);
       $twigViewer = $this->container->get(TwigViewer::class);
       $controller->setTwigViewer($twigViewer);
+      // $eventDispatcher = $this->container->get(EventDispatcher::class);
+      $controller->setEventDispatcher($this->eventDispatcher);
+      // dump($controller);
 
       $reflectionMethod = new ReflectionMethod($controller, $action);
       $parameters = $reflectionMethod->getParameters();
@@ -71,7 +74,6 @@ class kernel
       $controllerHandler = new ControllerHandler($controller,$action,$paramsArray);
       if(array_key_exists('middlewares',$details)){
         $detailsMiddlewaresArray  =  explode("|",$details['middlewares']);
-       
             array_walk($detailsMiddlewaresArray,function(&$value){
               if(array_key_exists($value,$this->middlewares)){
                 $middlewareClass =  $this->middlewares[$value];
@@ -83,11 +85,9 @@ class kernel
       $requestHandler = new RequestHandler($controllerHandler);
       if(!empty($detailsMiddlewaresArray)){
         $requestHandler->middlewares = $detailsMiddlewaresArray;
-
       }
       $response = $requestHandler->handle($request);
       $this->eventDispatcher->dispatch(new ResponseEvent($request, $response));
-      // dump($response);
       return $response;
 
       // return $controller->$action(...$paramsArray);

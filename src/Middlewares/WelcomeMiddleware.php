@@ -9,7 +9,7 @@ use Framework\Http\Response;
 
 class WelcomeMiddleware implements MiddlewareInterface{
   public function process(Request $request, RequestHandler $requestHandler) : Response {
-    dump("This is Printed Data from the Welcome Middleware");
+    // dump("This is Printed Data from the Welcome Middleware");
 
       return   $requestHandler->handle($request);
   }

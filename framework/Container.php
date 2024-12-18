@@ -8,13 +8,13 @@ class Container
     public static  $count ;
     private $binding = [];
     // public array = []
-    private array $initialized = [];
+    public   $initialized = [];
 
-    public function __construct()
-    {
-        self::$count++;
-        // print $this->count;
-    }
+    // public function __construct()
+    // {
+    //     self::$count++;
+    //     // print $this->count;
+    // }
     public function set($class, $value)
     {
         $this->binding[$class] = $value;
@@ -47,6 +47,7 @@ class Container
         }
         $detail = new ReflectionClass($class);
         // dump($detail);
+        // dump($detail);
         if ($detail->getConstructor() === null) {
             $newClass = new $class();
             $this->initialized[$class] = $newClass;
@@ -70,8 +71,8 @@ class Container
         $this->initialized[$class] = $mainClass;
         return $mainClass;
     }
-    public static function getCount(){
-        return self::$count;
-    }
+    // public static function getCount(){
+    //     return self::$count;
+    // }
 
 }

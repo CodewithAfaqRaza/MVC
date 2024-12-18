@@ -9,7 +9,7 @@ use Framework\Http\Response;
 
 class EidMiddleware implements MiddlewareInterface{
   public function process(Request $request, RequestHandler $requestHandler) : Response {
-    dump("This is Printed Data from the Eid Middleware");
+    // dump("This is Printed Data from the Eid Middleware");
     $response = $requestHandler->handle($request);
     $response->setBody($response->getBody()."Eid muberk");
       return $response;

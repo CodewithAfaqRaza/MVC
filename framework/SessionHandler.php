@@ -6,7 +6,7 @@ namespace Framework;
 class SessionHandler  implements SessionInterface{ 
     public function __construct( )
     {
-      session_start();
+    //   session_start();
      $this->initFlashMessages();
     }
     public function get($key){

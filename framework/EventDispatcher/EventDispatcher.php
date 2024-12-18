@@ -7,8 +7,11 @@ class EventDispatcher implements EventDispatcherInterface{
     public function dispatch(object $event)
     {
         foreach($this->getListenersForEvent($event)as $listeners){
-            dump($event);
+            // dump($event);
             $listeners($event);
+            if($event->isPropagationStopped()){
+              break;
+            }
         } 
     }
     public function getListenersForEvent(object $event):iterable{
@@ -20,7 +23,6 @@ class EventDispatcher implements EventDispatcherInterface{
     }
     public function addListeners($event,$listeners){
         $this->listeners[$event][]= $listeners;
-        // dump($this->listeners);
         return $this;
     }
 }
