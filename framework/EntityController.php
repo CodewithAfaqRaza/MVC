@@ -46,6 +46,8 @@ class EntityController extends BaseController implements EntityInterface {
         if ($result) {
           $id = $this->model->getLastInsertId();
           $this->request->getSessionHandler()->setFlash('success', "The Entity with {$id} has been inserted Succesfully");
+        //   dd("Temp dd");
+
           $this->eventDispatcher->dispatch(new StudentAdd($this));
           return new RedirectResponse("/{$this->filename}/$id/view");
             // header("Location: /{$this->filename}/$id/view");

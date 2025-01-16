@@ -35,8 +35,13 @@ class Response
     {
         $this->headers[$key] = $value;
     }
+    public function getHeader($key)
+    {
+       return  $this->headers[$key];
+    }
     public function send()
     {
+        ob_start();
         if ($this->http_request_code > 0) {
             http_response_code($this->http_request_code);
         }
@@ -44,5 +49,6 @@ class Response
             header($key . ": " . $header);
         }
         print $this->body;
+        ob_end_flush(); 
     }
 }

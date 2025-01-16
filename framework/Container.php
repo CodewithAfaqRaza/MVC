@@ -7,14 +7,9 @@ class Container
 {
     public static  $count ;
     private $binding = [];
-    // public array = []
     public   $initialized = [];
+    private Config $config;
 
-    // public function __construct()
-    // {
-    //     self::$count++;
-    //     // print $this->count;
-    // }
     public function set($class, $value)
     {
         $this->binding[$class] = $value;
@@ -71,8 +66,18 @@ class Container
         $this->initialized[$class] = $mainClass;
         return $mainClass;
     }
-    // public static function getCount(){
-    //     return self::$count;
-    // }
+    public function  setConfig($config) {
+        $this->config = $config;
+    }
+    public function  getConfig() {
+       return  $this->config;
+    }
+    public function setConfigClass ($key,$value){
+        $this->getConfig()->setSettings($key,$value);
+    }
+    public function  getConfigClass($key) {
+       return  $this->getConfig()->getSettings($key) ?? null;
+    }
+ 
 
 }

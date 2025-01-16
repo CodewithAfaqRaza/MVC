@@ -30,9 +30,10 @@ require BASE_PATH . "/config/middlewares.php";
 
 
 $twig = $container->get(Environment::class);
-// dd($twig);
-$envReader = $container->get("Framework\EnvReader"::class);
-$envReader->reader(BASE_PATH . "/" . ".env");
+// dump($container->getConfig()->getSettingsArray());
+
+// $envReader = $container->get("Framework\EnvReader"::class);
+// $envReader->reader(BASE_PATH . "/" . ".env");
 
 if ($_ENV["SHOW_ERRORS"]) {
     ini_set('display_errors', true);
@@ -40,20 +41,18 @@ if ($_ENV["SHOW_ERRORS"]) {
     ini_set('display_errors', false);
     
 }
-// set_error_handler("Framework\HandleError::errorHandler");
-// set_exception_handler("Framework\ExceptionHandler::errorException");
+set_error_handler("Framework\HandleError::errorHandler");
+set_exception_handler("Framework\ExceptionHandler::errorException");
 
 
 $request = Request::createFromGlobals();
-
-$eventDispatcher = $container->get(EventDispatcher::class);
-// $eventDispatcher->addListeners(ResponseEvent::class, new HeaderResponseEventList)->addListeners(ResponseEvent::class, new InvaliedResponseList)->addListeners(StudentAdd::class, new StudentAddListners);
 $container->get(EventDispatcher::class);
 require BASE_PATH . "/bootstrap/bootstrap.php";
 // dump($container->initialized);
-$dispatcher = new Kernel($routes, $container,$middlewares,$eventDispatcher);
-$response = $dispatcher->handle($request);
+$kernel = $container->get(Kernel::class);
+$response = $kernel->handle($request);
 $response->send();
+$kernel->terminate($request, $response);
 
 
 

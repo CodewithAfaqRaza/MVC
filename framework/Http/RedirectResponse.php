@@ -9,4 +9,8 @@ class RedirectResponse extends Response{
     parent::__construct();
     $this->setHeader("Location",$url);
    }
+   public function send(){
+      header("Location: " . $this->getHeader("Location"));
+      exit;
+   }
 }
